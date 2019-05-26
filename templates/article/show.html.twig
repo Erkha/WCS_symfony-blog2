@@ -19,6 +19,16 @@
                 <th>Content</th>
                 <td>{{ article.content }}</td>
             </tr>
+            <tr>
+                <th>Tags</th>
+                <td><ul>
+                {% for tag in article.tags %}
+                    <li>{{ tag.name }} </li>
+                    {% else %}
+                    <li>No tags for this article</li>
+                {% endfor %}
+                </ul></td>
+            </tr>
         </tbody>
     </table>
 
