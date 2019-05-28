@@ -5,21 +5,24 @@
 {% block body %}
     <h1>Article index</h1>
 
+    <a href="{{ path('article_new') }}">Create new</a>
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Title</th>
                 <th>Content</th>
+                <th>Category</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for article in articles %}
+        {% for article in articles|reverse %}
             <tr>
                 <td>{{ article.id }}</td>
                 <td>{{ article.title }}</td>
                 <td>{{ article.content }}</td>
+                <td>{{article.category.name}}</td>
                 <td>
                     <a href="{{ path('article_show', {'id': article.id}) }}">show</a>
                     <a href="{{ path('article_edit', {'id': article.id}) }}">edit</a>
@@ -33,5 +36,4 @@
         </tbody>
     </table>
 
-    <a href="{{ path('article_new') }}">Create new</a>
 {% endblock %}

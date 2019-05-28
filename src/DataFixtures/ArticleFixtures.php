@@ -17,14 +17,21 @@ Class ArticleFixtures extends Fixture implements DependentFixtureInterface
 			$faker  =  Faker\Factory::create('fr_FR');
 			$article->setContent($faker->paragraph($nbSentences = 3, $variableNbSentences = true));
 			$article->setTitle($faker->sentence($nbWords = 4, $variableNbWords = true));
+			$article->setSlug();
+		  $article->setCategory($this->getReference('categorie_'.rand(0,4)));
+			for ($j=0; $j < rand(0,4); $j++) { 
+				$article->addTag($this->getReference('tag_'.rand(0,4)));
+			}
 			$manager->persist($article);
-		  $article->setCategory($this->getReference('categorie_'.(($i+1)%5)));
-			$manager->flush($article);
 		}
+		$manager->flush();
 	}
 
 	public function getDependencies()
  	{
- 	return [CategoryFixtures::class];
+	 	return [
+	 		CategoryFixtures::class,
+			TagFixtures::class
+		];
  	}
 }

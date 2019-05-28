@@ -36,6 +36,7 @@ class ArticleController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
+            $article->setSlug();
             $entityManager->persist($article);
             $entityManager->flush();
 
@@ -67,6 +68,7 @@ class ArticleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $article->setSlug();
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('article_index', [

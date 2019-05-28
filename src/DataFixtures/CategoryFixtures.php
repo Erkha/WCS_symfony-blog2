@@ -22,7 +22,7 @@ Class CategoryFixtures extends Fixture
 			$category->setName($categoryName);
 			$manager->persist($category);
 			$this->addReference('categorie_' . $key, $category);
-			$manager->flush();
 		} 
+		$manager->flush();
 	}
 }

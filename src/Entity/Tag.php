@@ -68,7 +68,6 @@ class Tag
         if (!$this->articles->contains($article)) {
             $this->articles[] = $article;
         }
-
         return $this;
     }
 
