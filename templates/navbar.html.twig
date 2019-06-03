@@ -17,6 +17,14 @@
 	      <li class="nav-item">
 	        <a class="nav-link" href="/tag/">Tags</a>
 	      </li>
+	      <li class="nav-item">
+		        {% if app.user %}
+	    				Bonjour {{ app.user.email }} !
+	    				<a class="nav-link" href="{{ path('app_logout') }}"> Se déconnecter</a>
+						{% else %}
+	    				<a class="nav-link" href="{{ path('app_login') }}"> Se connecter</a>
+						{% endif %}
+	      </li>
 	    </ul>
 	  </div>
 	</nav>
