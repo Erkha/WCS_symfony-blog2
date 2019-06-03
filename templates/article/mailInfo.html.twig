@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Nouvel article publié</title>
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+    </head>
+    <body>
+        <container>
+            <h1>Nouvel Article créé!</h1>
+           <p> {{ article.title }} <a href="{{ url('article_show', {'id': article.id}) }}">lien</a> </p>        
+        </container>
+    </body>
+</html>
