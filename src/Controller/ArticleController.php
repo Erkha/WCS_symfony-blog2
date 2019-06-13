@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted; 
 
 /**
  * @Route("/article")
@@ -27,6 +28,7 @@ class ArticleController extends AbstractController
 
     /**
      * @Route("/new", name="article_new", methods={"GET","POST"})
+     * @IsGranted("ROLE_AUTHOR",message="No access! Get out!")
      */
     public function new(Request $request,\Swift_Mailer $mailer): Response
     {
@@ -59,6 +61,7 @@ class ArticleController extends AbstractController
 
     /**
      * @Route("/{id}", name="article_show", methods={"GET"})
+     * @IsGranted("ROLE_AUTHOR",message="No access! Get out!")
      */
     public function show(Article $article): Response
     {
@@ -69,38 +72,50 @@ class ArticleController extends AbstractController
 
     /**
      * @Route("/{id}/edit", name="article_edit", methods={"GET","POST"})
+     * @IsGranted("ROLE_AUTHOR",message="No access! Get out!")
      */
     public function edit(Request $request, Article $article): Response
-    {
-        $form = $this->createForm(ArticleType::class, $article);
-        $form->handleRequest($request);
+    { 
+        if ($this->getUser() == $article->getAuthor()) 
+        {
+            $form = $this->createForm(ArticleType::class, $article);
+            $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $article->setSlug();
-            $this->getDoctrine()->getManager()->flush();
+            if ($form->isSubmitted() && $form->isValid()) {
+                $article->setSlug();
+                $this->getDoctrine()->getManager()->flush();
 
+                return $this->redirectToRoute('article_index', [
+                    'id' => $article->getId(),
+                ]);
+            }
+
+            return $this->render('article/edit.html.twig', [
+                'article' => $article,
+                'form' => $form->createView(),
+            ]);
+        } 
+        else
+        {
             return $this->redirectToRoute('article_index', [
                 'id' => $article->getId(),
             ]);
         }
-
-        return $this->render('article/edit.html.twig', [
-            'article' => $article,
-            'form' => $form->createView(),
-        ]);
     }
 
     /**
      * @Route("/{id}", name="article_delete", methods={"DELETE"})
+     * @IsGranted("ROLE_AUTHOR",message="No access! Get out!")
      */
     public function delete(Request $request, Article $article): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$article->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($article);
-            $entityManager->flush();
+    {   
+        if ($this->getUser() == $article->getAuthor()) {
+            if ($this->isCsrfTokenValid('delete'.$article->getId(), $request->request->get('_token'))) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->remove($article);
+                $entityManager->flush();
+            }
         }
-
         return $this->redirectToRoute('article_index');
     }
 }
