@@ -10,6 +10,13 @@
     <body>
         <container>
         {% include 'navbar.html.twig' %}
+        {% for category, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
         {% block body %}{% endblock %}
 		{% block javascripts %}
 		    {{ encore_entry_script_tags('app') }}

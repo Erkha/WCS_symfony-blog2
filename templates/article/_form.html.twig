@@ -4,7 +4,7 @@
 
 {{ form_end(form) }}
 
-{% if errors is defined %}
+{% if errors is not empty %}
 	<h3>Merci de corriger  avant de soumettre à nouveau:</h3>
 	<ul>
 	{% for error in errors %}

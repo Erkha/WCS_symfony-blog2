@@ -36,6 +36,7 @@ class ArticleController extends AbstractController
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
 
+        $errors = [];
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $article->setSlug();
@@ -49,13 +50,14 @@ class ArticleController extends AbstractController
             ->setTo('jmtatout@gmail.com')
             ->setBody($this->renderView('article/mailInfo.html.twig',['article'=>$article]),'text/html');
             $mailer->send($message);
-
+            $this->addFlash('success', 'The new article has been created');
             return $this->redirectToRoute('article_index');
         }
 
         return $this->render('article/new.html.twig', [
             'article' => $article,
             'form' => $form->createView(),
+            'errors' => $errors
         ]);
     }
 
@@ -81,10 +83,11 @@ class ArticleController extends AbstractController
             $form = $this->createForm(ArticleType::class, $article);
             $form->handleRequest($request);
 
+            $errors = [];
             if ($form->isSubmitted() && $form->isValid()) {
                 $article->setSlug();
                 $this->getDoctrine()->getManager()->flush();
-
+                $this->addFlash('success', 'The  article has been updated');
                 return $this->redirectToRoute('article_index', [
                     'id' => $article->getId(),
                 ]);
@@ -117,6 +120,7 @@ class ArticleController extends AbstractController
                 $entityManager->flush();
             }
         }
+        $this->addFlash('danger', 'The  article has been removed');
         return $this->redirectToRoute('article_index');
     }
 }
