@@ -13,6 +13,7 @@
                 <th>Title</th>
                 <th>Content</th>
                 <th>Category</th>
+                <th>Tags</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -23,6 +24,13 @@
                 <td>{{ article.title }}</td>
                 <td>{{ article.content }}</td>
                 <td>{{article.category.name}}</td>
+                <td>
+                    {% if article.tags is defined%}
+                        {% for tag in article.tags %}
+                            {{tag.name}}-
+                        {% endfor %}
+                    {%endif%}
+                </td>
                 <td>
                     <a href="{{ path('article_show', {'id': article.id}) }}">show</a>
                     <a href="{{ path('article_edit', {'id': article.id}) }}">edit</a>
