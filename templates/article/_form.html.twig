@@ -1,4 +1,14 @@
 {{ form_start(form) }}
     {{ form_widget(form) }}
     <button class="btn">{{ button_label|default('Save') }}</button>
+
 {{ form_end(form) }}
+
+{% if errors is defined %}
+	<h3>Merci de corriger  avant de soumettre à nouveau:</h3>
+	<ul>
+	{% for error in errors %}
+	    <li>{{ error.message }}</li>
+	{% endfor %}
+	</ul>
+{% endif %}
