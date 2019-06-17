@@ -9,13 +9,35 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted; 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use app\Entity\User;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  * @Route("/article")
  */
 class ArticleController extends AbstractController
-{
+{   
+    /**
+     * @Route("/{id}/favorite", name="article_favorite", methods={"GET","POST"})
+     */
+    public function favorite(Request $request, Article $article, ObjectManager $manager): Response
+    {
+        if ($this->getUser()->getFavorite()->contains($article)) {
+            $this->getUser()->removeFavorite($article)   ;
+        }
+        else {
+            $this->getUser()->addFavorite($article);
+        }
+
+        $manager->flush();
+
+        return $this->json([
+            'isFavorite' => $this->getUser()->isFavorite($article)
+        ]);
+    }
+
+
     /**
      * @Route("/", name="article_index", methods={"GET"})
      */
@@ -69,6 +91,7 @@ class ArticleController extends AbstractController
     {
         return $this->render('article/show.html.twig', [
             'article' => $article,
+            'isFavorite' => $this->getUser()->isFavorite($article)
         ]);
     }
 

@@ -51,6 +51,14 @@ class User implements UserInterface
         $this->favorite = new ArrayCollection();
     }
 
+    public function isFavorite(Article $article):bool
+    {
+        foreach ($this->getFavorite() as $favorite) {
+            if($favorite === $article){return true;}
+        }
+        return false;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
